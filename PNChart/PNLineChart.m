@@ -193,7 +193,7 @@
         for (int index = 0; index < xLabels.count; index++) {
             labelText = xLabels[index];
 
-            NSInteger x = (index * _xLabelWidth + _chartMarginLeft + _xLabelWidth / 2.0);
+            NSInteger x = (index * _xLabelWidth  + _xLabelWidth / 2.0);
             NSInteger y = _chartMarginBottom + _chartCavanHeight;
 
             PNChartLabel *label = [[PNChartLabel alloc] initWithFrame:CGRectMake(x, y, (NSInteger) _xLabelWidth, (NSInteger) _chartMarginBottom)];
@@ -657,34 +657,34 @@
 #define IOS7_OR_LATER [[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0
 
 - (void)drawRect:(CGRect)rect {
-    if (self.isShowCoordinateAxis) {
+    if (self.showGridLines) {
         CGFloat yAxisOffset = 10.f;
 
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         UIGraphicsPushContext(ctx);
         CGContextSetLineWidth(ctx, self.axisWidth);
-        CGContextSetStrokeColorWithColor(ctx, [self.axisColor CGColor]);
+        CGContextSetStrokeColorWithColor(ctx, [self.gridLinesColor CGColor]);
 
         CGFloat xAxisWidth = CGRectGetWidth(rect) - (_chartMarginLeft + _chartMarginRight) / 2;
         CGFloat yAxisHeight = _chartMarginBottom + _chartCavanHeight;
 
         // draw coordinate axis
-        CGContextMoveToPoint(ctx, _chartMarginBottom + yAxisOffset, 0);
-        CGContextAddLineToPoint(ctx, _chartMarginBottom + yAxisOffset, yAxisHeight);
+        CGContextMoveToPoint(ctx, _chartMarginBottom + yAxisOffset, yAxisHeight);
+//        CGContextAddLineToPoint(ctx, _chartMarginBottom + yAxisOffset, yAxisHeight);
         CGContextAddLineToPoint(ctx, xAxisWidth, yAxisHeight);
         CGContextStrokePath(ctx);
 
-        // draw y axis arrow
-        CGContextMoveToPoint(ctx, _chartMarginBottom + yAxisOffset - 3, 6);
-        CGContextAddLineToPoint(ctx, _chartMarginBottom + yAxisOffset, 0);
-        CGContextAddLineToPoint(ctx, _chartMarginBottom + yAxisOffset + 3, 6);
-        CGContextStrokePath(ctx);
-
-        // draw x axis arrow
-        CGContextMoveToPoint(ctx, xAxisWidth - 6, yAxisHeight - 3);
-        CGContextAddLineToPoint(ctx, xAxisWidth, yAxisHeight);
-        CGContextAddLineToPoint(ctx, xAxisWidth - 6, yAxisHeight + 3);
-        CGContextStrokePath(ctx);
+//        // draw y axis arrow
+//        CGContextMoveToPoint(ctx, _chartMarginBottom + yAxisOffset - 3, 6);
+//        CGContextAddLineToPoint(ctx, _chartMarginBottom + yAxisOffset, 0);
+//        CGContextAddLineToPoint(ctx, _chartMarginBottom + yAxisOffset + 3, 6);
+//        CGContextStrokePath(ctx);
+//
+//        // draw x axis arrow
+//        CGContextMoveToPoint(ctx, xAxisWidth - 6, yAxisHeight - 3);
+//        CGContextAddLineToPoint(ctx, xAxisWidth, yAxisHeight);
+//        CGContextAddLineToPoint(ctx, xAxisWidth - 6, yAxisHeight + 3);
+//        CGContextStrokePath(ctx);
 
         if (self.showLabel) {
 
@@ -692,56 +692,56 @@
             CGPoint point;
             for (NSUInteger i = 0; i < [self.xLabels count]; i++) {
                 point = CGPointMake(2 * _chartMarginLeft + (i * _xLabelWidth), _chartMarginBottom + _chartCavanHeight);
-                CGContextMoveToPoint(ctx, point.x, point.y - 2);
-                CGContextAddLineToPoint(ctx, point.x, point.y);
-                CGContextStrokePath(ctx);
-            }
-
-            // draw y axis separator
-            CGFloat yStepHeight = _chartCavanHeight / _yLabelNum;
-            for (NSUInteger i = 0; i < [self.xLabels count]; i++) {
-                point = CGPointMake(_chartMarginBottom + yAxisOffset, (_chartCavanHeight - i * yStepHeight + _yLabelHeight / 2));
                 CGContextMoveToPoint(ctx, point.x, point.y);
-                CGContextAddLineToPoint(ctx, point.x + 2, point.y);
+                CGContextAddLineToPoint(ctx, point.x, point.y-_chartCavanHeight-_chartMarginTop);
                 CGContextStrokePath(ctx);
             }
+
+//            // draw y axis separator
+//            CGFloat yStepHeight = _chartCavanHeight / _yLabelNum;
+//            for (NSUInteger i = 0; i < [self.xLabels count]; i++) {
+//                point = CGPointMake(_chartMarginBottom + yAxisOffset, (_chartCavanHeight - i * yStepHeight + _yLabelHeight / 2));
+//                CGContextMoveToPoint(ctx, point.x, point.y);
+//                CGContextAddLineToPoint(ctx, point.x + 2, point.y);
+//                CGContextStrokePath(ctx);
+//            }
         }
 
-        UIFont *font = [UIFont systemFontOfSize:11];
-
-        // draw y unit
-        if ([self.yUnit length]) {
-            CGFloat height = [PNLineChart sizeOfString:self.yUnit withWidth:30.f font:font].height;
-            CGRect drawRect = CGRectMake(_chartMarginLeft + 10 + 5, 0, 30.f, height);
-            [self drawTextInContext:ctx text:self.yUnit inRect:drawRect font:font];
-        }
-
-        // draw x unit
-        if ([self.xUnit length]) {
-            CGFloat height = [PNLineChart sizeOfString:self.xUnit withWidth:30.f font:font].height;
-            CGRect drawRect = CGRectMake(CGRectGetWidth(rect) - _chartMarginLeft + 5, _chartMarginBottom + _chartCavanHeight - height / 2, 25.f, height);
-            [self drawTextInContext:ctx text:self.xUnit inRect:drawRect font:font];
-        }
+//        UIFont *font = [UIFont systemFontOfSize:11];
+//
+//        // draw y unit
+//        if ([self.yUnit length]) {
+//            CGFloat height = [PNLineChart sizeOfString:self.yUnit withWidth:30.f font:font].height;
+//            CGRect drawRect = CGRectMake(_chartMarginLeft + 10 + 5, 0, 30.f, height);
+//            [self drawTextInContext:ctx text:self.yUnit inRect:drawRect font:font];
+//        }
+//
+//        // draw x unit
+//        if ([self.xUnit length]) {
+//            CGFloat height = [PNLineChart sizeOfString:self.xUnit withWidth:30.f font:font].height;
+//            CGRect drawRect = CGRectMake(CGRectGetWidth(rect) - _chartMarginLeft + 5, _chartMarginBottom + _chartCavanHeight - height / 2, 25.f, height);
+//            [self drawTextInContext:ctx text:self.xUnit inRect:drawRect font:font];
+//        }
     }
-    if (self.showYGridLines) {
+    if (self.showGridLines) {
         CGContextRef ctx = UIGraphicsGetCurrentContext();
         CGFloat yAxisOffset = _showLabel ? 10.f : 0.0f;
         CGPoint point;
         CGFloat yStepHeight = _chartCavanHeight / _yLabelNum;
-        if (self.yGridLinesColor) {
-            CGContextSetStrokeColorWithColor(ctx, self.yGridLinesColor.CGColor);
+        if (self.gridLinesColor) {
+            CGContextSetStrokeColorWithColor(ctx, self.gridLinesColor.CGColor);
         } else {
             CGContextSetStrokeColorWithColor(ctx, [UIColor lightGrayColor].CGColor);
         }
-        for (NSUInteger i = 0; i < _yLabelNum; i++) {
+        for (NSUInteger i = 0; i <= _yLabelNum; i++) {
             point = CGPointMake(_chartMarginLeft + yAxisOffset, (_chartCavanHeight - i * yStepHeight + _yLabelHeight / 2));
             CGContextMoveToPoint(ctx, point.x, point.y);
             // add dotted style grid
-            CGFloat dash[] = {6, 5};
+//            CGFloat dash[] = {6, 5};
             // dot diameter is 20 points
             CGContextSetLineWidth(ctx, 0.5);
-            CGContextSetLineCap(ctx, kCGLineCapRound);
-            CGContextSetLineDash(ctx, 0.0, dash, 2);
+//            CGContextSetLineCap(ctx, kCGLineCapRound);
+//            CGContextSetLineDash(ctx, 0.0, dash, 2);
             CGContextAddLineToPoint(ctx, CGRectGetWidth(rect) - _chartMarginLeft + 5, point.y);
             CGContextStrokePath(ctx);
         }
@@ -759,18 +759,17 @@
     self.clipsToBounds = YES;
     self.chartLineArray = [NSMutableArray new];
     _showLabel = YES;
-    _showGenYLabels = YES;
+    _showGenYLabels = NO;
     _pathPoints = [[NSMutableArray alloc] init];
     _endPointsOfPath = [[NSMutableArray alloc] init];
     self.userInteractionEnabled = YES;
-
+    _showGridLines = YES;
     _yFixedValueMin = -FLT_MAX;
     _yFixedValueMax = -FLT_MAX;
     _yLabelNum = 5.0;
     _yLabelHeight = [[[[PNChartLabel alloc] init] font] pointSize];
 
-//    _chartMargin = 40;
-
+    _gridLinesColor = [UIColor colorWithRed:216/255.0 green:216/255.0 blue:216/255.0 alpha:216/255.0];
     _chartMarginLeft = 25.0;
     _chartMarginRight = 25.0;
     _chartMarginTop = 25.0;
